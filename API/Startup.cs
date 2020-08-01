@@ -8,6 +8,9 @@ using Core.Interfaces;
 using AutoMapper;
 using API.Helpers;
 using API.Middleware;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using API.Errors;
 
 namespace API
 {
@@ -29,6 +32,24 @@ namespace API
             services.AddControllers();
             services.AddDbContext<StoreContext>(x =>
                 x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var errors = actionContext.ModelState
+                        .Where(e => e.Value.Errors.Count > 0)
+                        .SelectMany(x => x.Value.Errors)
+                        .Select(x => x.ErrorMessage).ToArray();
+
+                    var errorResponse = new ApiValidation
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
         }
 
         // This method gets called by the runtime.
