@@ -11,6 +11,7 @@ using API.Middleware;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using API.Errors;
+using Microsoft.OpenApi.Models;
 
 namespace API
 {
@@ -50,6 +51,11 @@ namespace API
                     return new BadRequestObjectResult(errorResponse);
                 };
             });
+
+            services.AddSwaggerGen(conf =>
+            {
+                conf.SwaggerDoc("v1", new OpenApiInfo {Title = "Shop API", Version = "v1"});
+            });
         }
 
         // This method gets called by the runtime.
@@ -66,6 +72,12 @@ namespace API
             app.UseStaticFiles();
 
             app.UseAuthorization();
+
+            // This place for Swaggerdoc nice
+            app.UseSwagger();
+            app.UseSwaggerUI(conf => {
+                conf.SwaggerEndpoint("/swagger/v1/swagger.json", "Shop API v1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
