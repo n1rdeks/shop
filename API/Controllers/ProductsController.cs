@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Dtos;
+using API.Helpers;
 using API.Response;
 using AutoMapper;
 using Core.Entities;
@@ -30,17 +31,26 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>>
-            GetProducts(string sort, int? brandId, int? typeId)
+        public async Task<ActionResult<Pagination<ProductToReturnDto>>>
+            GetProducts([FromQuery]ProductSpecParams productParams)
         {
             // Just watch on NAME of class to read ->
             // get listAsync with spec(Products with Types and Brands)
             // this is Specification pattern
-            var spec = new ProductsWithTypesAndBrandsSpecification(sort, brandId, typeId);
+            var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
+
+            var countSpec = new ProductWithFiltersForCountSpecification(productParams);
+
+            var totalItems = await _productsRepo.CountAsync(countSpec);
+
             var products = await _productsRepo.ListAsync(spec);
 
-            return Ok(_mapper.Map<IReadOnlyList<Product>,
-                      IReadOnlyList<ProductToReturnDto>>(products));
+            var data = _mapper.Map<IReadOnlyList<Product>,
+                            IReadOnlyList<ProductToReturnDto>>(products);
+
+            return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex,
+                                                         productParams.PageSize,
+                                                         totalItems, data));
         }
 
         [HttpGet("{id}")]

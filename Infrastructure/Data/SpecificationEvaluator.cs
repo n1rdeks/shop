@@ -10,6 +10,7 @@ namespace Infrastructure.Data
         public static IQueryable<TEntity> GetQuery(IQueryable<TEntity> inputQuery,
                                                    ISpecification<TEntity> spec)
         {
+            // Ordering important! Use pagination after sort...
             if (spec.Criteria != null)
             {
                 inputQuery = inputQuery.Where(spec.Criteria);
@@ -23,6 +24,11 @@ namespace Infrastructure.Data
             if (spec.OrderByDescending != null)
             {
                 inputQuery = inputQuery.OrderByDescending(spec.OrderByDescending);
+            }
+
+            if (spec.IsPagingEnabled)
+            {
+                inputQuery = inputQuery.Skip(spec.Skip).Take(spec.Take);
             }
 
             inputQuery = spec.Includes.Aggregate(inputQuery, (current, include) =>
