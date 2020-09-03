@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
     ngOnInit(): void {
         this.http.get('https://localhost:5001/api/products').subscribe((response: IPagination) => {
             this.products = response.data;
+            console.log(response);
         }, error => {
             console.log(error);
         })
