@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
 
-    <!--    Filter  -->
+    <!--  Filter  -->
     <section class="col-3">
       <h5 class="text-warning ml-3">Sort</h5>
       <select class="custom-select mb-3" (change)="onSortSelected($event.target.value)">
@@ -11,25 +11,37 @@
       <ul class="list-group my-3">
         <li class="list-group-item"
             *ngFor="let brand of brands"
-            [class.active]="brand.id === brandIdSelected"
+            [class.active]="brand.id === shopParams.brandId"
             [value]="brand.id"
             (click)="onBrandSelected(brand.id)" >{{brand.name}}</li>
       </ul>
       <h5 class="text-warning ml-3">Types</h5>
       <ul class="list-group my-3">
         <li class="list-group-item"
-            [class.active]="type.id === typeIdSelected"
+            [class.active]="type.id === shopParams.typeId"
             [value]="type.id"
             (click)="onTypeSelected(type.id)"
             *ngFor="let type of types">{{type.name}}</li>
       </ul>
     </section>
 
-    <!--    Content-->
+    <!--  Content  -->
     <section class="col-9">
       <div class="d-flex justify-content-between align-items-center pb-2">
         <header>
-          <span>Showing <strong>10</strong> of <strong>16</strong> results</span>
+          <!--  Defence expression, because totalCount get on server.  -->
+          <span *ngIf="totalCount && totalCount > 0">
+            Showing
+            <strong>
+              {{(shopParams.pageNumber-1) * shopParams.pageSize + 1}} -
+              {{shopParams.pageNumber * shopParams.pageSize
+                > totalCount
+                ? totalCount
+                : shopParams.pageNumber * shopParams.pageSize}}
+            </strong> of <strong>{{totalCount}}</strong> results</span>
+          <span *ngIf="totalCount === 0">
+            There are <strong>0</strong> results for this filter
+          </span>
         </header>
         <div class="form-inline mt-2">
           <input class="form-control mr-1" style="width: 300px;" placeholder="Search" type="text">
@@ -37,12 +49,19 @@
           <button class="btn btn-outline-success ml-1 my-2">Reset</button>
         </div>
       </div>
-
+      <!--  Cards of products  -->
       <div class="row">
         <div class="col-4 mb-4" *ngFor = "let item of products">
           <app-product-item [product]="item"></app-product-item>
         </div>
       </div>
+      <!--  Pagination (TODO: need change fu code '6' to var for remove hardcode)  -->
+      <pagination [boundaryLinks]="true" [totalItems]="totalCount" *ngIf="totalCount > 6"
+                  (pageChanged)="onPageChanged($event)"
+                  [itemsPerPage]="shopParams.pageSize"
+                  previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+
+      </pagination>
     </section>
   </div>
 </div>
