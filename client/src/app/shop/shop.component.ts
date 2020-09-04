@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { IProduct } from '../shared/models/product';
 import { ShopService } from './shop.service';
 import { IProductBrand } from '../shared/models/productBrand';
@@ -12,6 +12,7 @@ import { ShopParams } from '../shared/models/shopParams';
     styleUrls: ['./shop.component.scss']
 })
 export class ShopComponent implements OnInit {
+    @ViewChild('search', {static: true}) searchTerm: ElementRef;
     products: IProduct[];
     brands: IProductBrand[];
     types: IProductType[];
@@ -60,12 +61,28 @@ export class ShopComponent implements OnInit {
     }
 
     onBrandSelected(brandId: number) {
+        // ------- I clear search, if using brand filter
+        // if needed use filter on search term - just remove this lines
+        this.searchTerm.nativeElement.value = '';
+        this.shopParams.search = '';
+        // -------
+
         this.shopParams.brandId = brandId;
+        // Reset page
+        this.shopParams.pageNumber = 1;
         this.getProducts();
     }
 
     onTypeSelected(typeId: number) {
+        // ------- I clear search, if using type filter
+        // if needed use filter on search term - just remove this lines
+        this.searchTerm.nativeElement.value = '';
+        this.shopParams.search = '';
+        // -------
+
         this.shopParams.typeId = typeId;
+        // Reset page
+        this.shopParams.pageNumber = 1;
         this.getProducts();
     }
 
@@ -75,7 +92,20 @@ export class ShopComponent implements OnInit {
     }
 
     onPageChanged(event: any) {
-        this.shopParams.pageNumber = event.page;
+        if (this.shopParams.pageNumber !== event) {
+            this.shopParams.pageNumber = event;
+            this.getProducts();
+        }
+    }
+
+    onSearch() {
+        this.shopParams.search = this.searchTerm.nativeElement.value;
+        this.getProducts();
+    }
+
+    onReset() {
+        this.searchTerm.nativeElement.value = '';
+        this.shopParams = new ShopParams();
         this.getProducts();
     }
 }
