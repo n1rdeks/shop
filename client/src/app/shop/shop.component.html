@@ -3,26 +3,28 @@
 
     <!--  Filter  -->
     <section class="col-3">
-      <h5 class="text-warning ml-3">Sort</h5>
-      <select class="custom-select mb-3" (change)="onSortSelected($event.target.value)">
-        <option *ngFor="let sort of sortOptions" [value]="sort.value">{{sort.name}}</option>
-      </select>
-      <h5 class="text-warning ml-3">Brands</h5>
-      <ul class="list-group my-3">
-        <li class="list-group-item"
-            *ngFor="let brand of brands"
-            [class.active]="brand.id === shopParams.brandId"
-            [value]="brand.id"
-            (click)="onBrandSelected(brand.id)" >{{brand.name}}</li>
-      </ul>
-      <h5 class="text-warning ml-3">Types</h5>
-      <ul class="list-group my-3">
-        <li class="list-group-item"
-            [class.active]="type.id === shopParams.typeId"
-            [value]="type.id"
-            (click)="onTypeSelected(type.id)"
-            *ngFor="let type of types">{{type.name}}</li>
-      </ul>
+      <ng-container *ngIf="types && brands">
+        <h5 class="text-warning ml-3 mt-4 mb-3">Sort</h5>
+        <select class="custom-select mb-4" (change)="onSortSelected($event.target.value)">
+          <option *ngFor="let sort of sortOptions" [value]="sort.value">{{sort.name}}</option>
+        </select>
+        <h5 class="text-warning ml-3">Brands</h5>
+        <ul class="list-group my-3">
+          <li class="list-group-item"
+              *ngFor="let brand of brands"
+              [class.active]="brand.id === shopParams.brandId"
+              [value]="brand.id"
+              (click)="onBrandSelected(brand.id)" >{{brand.name}}</li>
+        </ul>
+        <h5 class="text-warning ml-3">Types</h5>
+        <ul class="list-group my-3">
+          <li class="list-group-item"
+              [class.active]="type.id === shopParams.typeId"
+              [value]="type.id"
+              (click)="onTypeSelected(type.id)"
+              *ngFor="let type of types">{{type.name}}</li>
+        </ul>
+      </ng-container>
     </section>
 
     <!--  Content  -->
@@ -33,7 +35,7 @@
                            [pageSize]="shopParams.pageSize"
                            [totalCount]="totalCount"></app-paging-header>
 
-        <div class="form-inline mt-2">
+        <div class="form-inline" *ngIf="products">
           <input (keyup.enter)="onSearch()" class="form-control mr-1" style="width: 300px;"
                  placeholder="Search" #search
                  type="text">

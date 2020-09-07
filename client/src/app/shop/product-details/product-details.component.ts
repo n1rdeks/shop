@@ -14,7 +14,10 @@ export class ProductDetailsComponent implements OnInit {
     product: IProduct;
 
     constructor(private  shopService: ShopService, private activatedRoute: ActivatedRoute,
-                private bcService: BreadcrumbService) { }
+                private bcService: BreadcrumbService) {
+        // init on empty string breadcrumb for dont show any info before load data on API
+        this.bcService.set('@productDetails', '');
+    }
 
     ngOnInit(): void {
         this.loadProduct();
