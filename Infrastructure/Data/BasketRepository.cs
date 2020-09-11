@@ -26,7 +26,7 @@ namespace Infrastructure.Data
         public async Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)
         {
             // TimeSpan need calculate (server, memory, "Seriouse Buisness" etc)
-            // well, 30 days for save Basket... 
+            // well, 30 days for save Basket...
             var created = await _database.StringSetAsync(basket.Id,
                 JsonSerializer.Serialize(basket), TimeSpan.FromDays(30));
 

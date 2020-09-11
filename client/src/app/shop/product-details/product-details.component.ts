@@ -3,6 +3,7 @@ import { IProduct } from '../../shared/models/product';
 import { ShopService } from '../shop.service';
 import { ActivatedRoute } from '@angular/router';
 import { BreadcrumbService } from 'xng-breadcrumb';
+import { BasketService } from '../../basket/basket.service';
 
 
 @Component({
@@ -12,15 +13,30 @@ import { BreadcrumbService } from 'xng-breadcrumb';
 })
 export class ProductDetailsComponent implements OnInit {
     product: IProduct;
+    quantity = 1;
 
     constructor(private  shopService: ShopService, private activatedRoute: ActivatedRoute,
-                private bcService: BreadcrumbService) {
+                private bcService: BreadcrumbService, private basketService: BasketService) {
         // init on empty string breadcrumb for dont show any info before load data on API
         this.bcService.set('@productDetails', '');
     }
 
     ngOnInit(): void {
         this.loadProduct();
+    }
+
+    addItemToBasket() {
+        this.basketService.addItemToBasket(this.product, this.quantity);
+    }
+
+    incrementQuantity() {
+        this.quantity++;
+    }
+
+    decrementQuantity() {
+        if (this.quantity > 1) {
+            this.quantity--;
+        }
     }
 
     loadProduct() {
