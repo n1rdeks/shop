@@ -1,5 +1,10 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+
+# remove redis dump
+*.rdb
+
+
 obj
 bin
 .vscode
