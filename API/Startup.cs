@@ -8,6 +8,7 @@ using AutoMapper;
 using API.Helpers;
 using API.Middleware;
 using API.Extensions;
+using Infrastructure.Identity;
 using StackExchange.Redis;
 
 
@@ -27,8 +28,12 @@ namespace API
         {
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
+
             services.AddDbContext<StoreContext>(x =>
                 x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+                x.UseSqlite(_config.GetConnectionString("IdentityConnection")));
 
             services.AddSingleton<IConnectionMultiplexer>(conf =>
             {
@@ -37,7 +42,10 @@ namespace API
                 return ConnectionMultiplexer.Connect(configuration);
             });
 
+            // I create Extensions with services
             services.AddApplicationServices();
+            services.AddIdentityServices(_config);
+
             services.AddSwaggerDocumentation();
             services.AddCors(opt => {
                 opt.AddPolicy("CorsPolicy", policy => {
@@ -61,6 +69,7 @@ namespace API
 
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
