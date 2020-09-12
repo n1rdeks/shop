@@ -4,9 +4,7 @@ namespace API.Dtos
 {
     public class RegisterDto
     {
-        // We dont hate any China guys, but... Just change, if needed
         [Required]
-        [Range(minimum:3,maximum:25)]
         public string DisplayName { get; set; }
 
         // This shit [EmailAddress] check only '@' symbol in string.
