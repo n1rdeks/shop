@@ -1,4 +1,4 @@
-namespace API.Response
+namespace API.Errors
 {
     public class ApiResponse
     {
