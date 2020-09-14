@@ -46,19 +46,18 @@ namespace API.Controllers
         [HttpGet("address")]
         public async Task<ActionResult<AddressDto>> GetUserAddressAsync()
         {
-
-            var user = await _userManager.FindByUserByClaimsPrincipleWithAddressAsync(
-                HttpContext.User);
+            var user = await _userManager
+                    .FindByUserByClaimsPrincipleWithAddressAsync(HttpContext.User);
 
             return _mapper.Map<Address, AddressDto>(user.Address);
         }
 
         [Authorize]
         [HttpPut("address")]
-        public async Task<ActionResult<AddressDto>> UpdateUserAddress(AddressDto address)
+        public async Task<ActionResult<AddressDto>> UpdateUserAddressAsync(AddressDto address)
         {
-            var user = await _userManager.FindByUserByClaimsPrincipleWithAddressAsync(HttpContext
-            .User);
+            var user = await _userManager
+                    .FindByUserByClaimsPrincipleWithAddressAsync(HttpContext.User);
 
             user.Address = _mapper.Map<AddressDto, Address>(address);
 
