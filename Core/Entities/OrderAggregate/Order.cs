@@ -5,7 +5,7 @@ namespace Core.Entities.OrderAggregate
 {
     public class Order : BaseEntity
     {
-        // Entity Framework needed all constructors (with noparams too)
+        // Entity Framework needed all constructors (with no params too)
         public Order() {}
 
         public Order(IReadOnlyList<OrderItem> orderItems, string buyerEmail,
