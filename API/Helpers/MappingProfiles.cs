@@ -16,15 +16,13 @@ namespace API.Helpers
                     .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
 
             // Please, careful with namespaces on Address! This is different entities!
-            // This is Core.Entities.Identity.Address
             CreateMap<Core.Entities.Identity.Address, AddressDto>().ReverseMap();
 
             CreateMap<CustomerBasketDto, CustomerBasket>();
             CreateMap<BasketItemDto, BasketItem>();
 
             // Please, careful with namespaces on Address! This is different entities!
-            // This is Core.Entities.OrderAggregate.Address - included by "using"
-            CreateMap<AddressDto, Address>();
+            CreateMap<AddressDto, Core.Entities.OrderAggregate.Address>();
 
             CreateMap<Order, OrderToReturnDto>()
                     .ForMember(d => d.DeliveryMethod,

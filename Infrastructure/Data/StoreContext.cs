@@ -31,32 +31,33 @@ namespace Infrastructure.Data
             // SQLite not supported decimal, so... converted to double.
             // FU SQLite not supported Date too, so... converted too.
             // We use next steps ONLY if u use SQLite DB!
-            if (Database.ProviderName != "Microsoft.EntityFrameworkCore.Sqlite") return;
-
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            if (Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
             {
-                var properties = entityType
-                                 .ClrType.GetProperties()
-                                 .Where(p => p.PropertyType == typeof(decimal));
 
-                var dateTimeProperties = entityType
-                                         .ClrType.GetProperties()
-                                         .Where(p => p.PropertyType == typeof(DateTimeOffset));
-
-                foreach (var property in properties)
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
                 {
-                    modelBuilder.Entity(entityType.Name)
-                                .Property(property.Name).HasConversion<double>();
-                }
+                    var properties = entityType
+                                     .ClrType.GetProperties()
+                                     .Where(p => p.PropertyType == typeof(decimal));
 
-                foreach (var property in dateTimeProperties)
-                {
-                    modelBuilder.Entity(entityType.Name)
-                                .Property(property.Name)
-                                .HasConversion(new DateTimeOffsetToBinaryConverter());
+                    var dateTimeProperties = entityType
+                                             .ClrType.GetProperties()
+                                             .Where(p => p.PropertyType == typeof(DateTimeOffset));
+
+                    foreach (var property in properties)
+                    {
+                        modelBuilder.Entity(entityType.Name)
+                                    .Property(property.Name).HasConversion<double>();
+                    }
+
+                    foreach (var property in dateTimeProperties)
+                    {
+                        modelBuilder.Entity(entityType.Name)
+                                    .Property(property.Name)
+                                    .HasConversion(new DateTimeOffsetToBinaryConverter());
+                    }
                 }
             }
-
         }
     }
 }
